@@ -1,0 +1,46 @@
+<.header>
+  Listing Jobs
+  <:actions>
+    <.link patch={~p"/jobs/new"}>
+      <.button>New Job</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="jobs"
+  rows={@streams.jobs}
+  row_click={fn {_id, job} -> JS.navigate(~p"/jobs/#{job}") end}
+>
+  <:col :let={{_id, job}} label="Description">{job.description}</:col>
+  <:col :let={{_id, job}} label="State">{job.state}</:col>
+  <:col :let={{_id, job}} label="Date applied">{job.date_applied}</:col>
+  <:col :let={{_id, job}} label="Company">{job.company}</:col>
+  <:col :let={{_id, job}} label="Title">{job.title}</:col>
+  <:col :let={{_id, job}} label="Notes">{job.notes}</:col>
+  <:action :let={{_id, job}}>
+    <div class="sr-only">
+      <.link navigate={~p"/jobs/#{job}"}>Show</.link>
+    </div>
+    <.link patch={~p"/jobs/#{job}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, job}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: job.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="job-modal" show on_cancel={JS.patch(~p"/jobs")}>
+  <.live_component
+    module={JobsyncWeb.JobLive.FormComponent}
+    id={@job.id || :new}
+    title={@page_title}
+    action={@live_action}
+    job={@job}
+    patch={~p"/jobs"}
+  />
+</.modal>
