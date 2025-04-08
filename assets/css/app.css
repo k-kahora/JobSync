@@ -3,3 +3,13 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+@layer base {
+	h6 {
+		@apply text-base;
+	}
+	h1 {
+		@apply text-7xl;
+	}
+}
+
+

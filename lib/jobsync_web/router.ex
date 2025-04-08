@@ -21,6 +21,7 @@ defmodule JobsyncWeb.Router do
     live "/jobs", JobLive.Index, :index
     live "/jobs/new", JobLive.Index, :new
     live "/jobs/:id/edit", JobLive.Index, :edit
+    live "/landing", Landing
 
     live "/jobs/:id", JobLive.Show, :show
     live "/jobs/:id/show/edit", JobLive.Show, :edit
