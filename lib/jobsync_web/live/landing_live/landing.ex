@@ -4,8 +4,7 @@ defmodule JobsyncWeb.Landing do
   alias Jobsync.Accounts
 
   def mount(_params, session, socket) do
-    user = Accounts.get_user_by_session_token(session["user_token"])
-
+    # user = Accounts.get_user_by_session_token(session["user_token"])
     {:ok,
      assign(socket,
        title: "JobSync",
@@ -16,10 +15,6 @@ defmodule JobsyncWeb.Landing do
 
   def render(assigns) do
     ~H"""
-    <pre>
-      <%= inspect(@current_user.email) %>
-      <%= @session_id %>
-    </pre>
     <div class="flex flex-col items-center lg:items-start gap-10 v-screen">
       <Component.header></Component.header>
       <ul>

@@ -21,12 +21,7 @@ defmodule JobsyncWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    live "/jobs", JobLive.Index, :index
-    live "/jobs/new", JobLive.Index, :new
-    live "/jobs/:id/edit", JobLive.Index, :edit
-
-    live "/jobs/:id", JobLive.Show, :show
-    live "/jobs/:id/show/edit", JobLive.Show, :edit
+    live "/landing", Landing
   end
 
   # Other scopes may use custom stacks.
@@ -75,7 +70,14 @@ defmodule JobsyncWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
-      live "/landing", Landing
+      # jobs
+
+      live "/jobs", JobLive.Index, :index
+      live "/jobs/new", JobLive.Index, :new
+      live "/jobs/:id/edit", JobLive.Index, :edit
+
+      live "/jobs/:id", JobLive.Show, :show
+      live "/jobs/:id/show/edit", JobLive.Show, :edit
     end
   end
 
