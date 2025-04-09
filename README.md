@@ -19,3 +19,9 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 # Based off of
 https://www.tealhq.com/tools/job-tracker?utm_campaign=na_ga_pm_intent&utm_medium=cpc&utm_source=google&utm_group=&gad_source=1&gclid=Cj0KCQjw782_BhDjARIsABTv_JBLo3MRdzSUu2zF296efL_deh4wp8th-cqY1T9MDmEjOiAu4UzFCuUaAs-9EALw_wcB
+
+# TODO
+- [x] Landing Page Responsivness
+- [ ] Use generated code to add job descriptions
+- [ ] Upload a job description and extract the good stuff from it
+
