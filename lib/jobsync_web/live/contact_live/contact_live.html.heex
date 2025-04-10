@@ -1,0 +1,14 @@
+<.header>
+  <:subtitle>promo code</:subtitle>
+</.header>
+<div>
+  <.simple_form for={@form} id="promo-form" phx-change="validate" phx-submit="save">
+    <.input field={@form[:first_name]} type="text" label="First Name" />
+    <.input field={@form[:email]} type="email" label="Email" phx-debounce="blur" />
+    <.input field={@form[:phone_number]} type="text" label="Phone Number" phx-debounce="blur" />
+    <.input field={@form[:message]} type="textarea" label="Message" phx-debounce="blur" />
+    <:actions>
+      <.button phx-disable-with="Sending...">Send Promo</.button>
+    </:actions>
+  </.simple_form>
+</div>
