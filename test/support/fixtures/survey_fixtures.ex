@@ -1,4 +1,6 @@
 defmodule Jobsync.SurveyFixtures do
+  import Jobsync.AccountsFixtures
+
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Jobsync.Survey` context.
@@ -13,7 +15,8 @@ defmodule Jobsync.SurveyFixtures do
       |> Enum.into(%{
         target_date: ~D[2025-04-09],
         target_salary: 42,
-        target_title: "some target_title"
+        target_title: "some target_title",
+        user_id: user_fixture().id
       })
       |> Jobsync.Survey.create_goal()
 
