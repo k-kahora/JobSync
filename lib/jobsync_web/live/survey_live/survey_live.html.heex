@@ -1,0 +1,12 @@
+<Component.hero content="Survey">
+  Fill out the survey here
+</Component.hero>
+<%!-- <Show.details goal={nil}></Show.details> --%>
+<%= if @goal do %>
+  <Show.details goal={@goal}></Show.details>
+<% else %>
+  <h1>coming soon</h1>
+<% end %>
+<%!-- <pre> --%>
+<%!--   <%= inspect(assigns, pretty: true) %> --%>
+<%!-- </pre> --%>

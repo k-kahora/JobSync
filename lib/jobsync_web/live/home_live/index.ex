@@ -6,6 +6,7 @@ defmodule JobsyncWeb.HomeLive.Index do
   #  Job App Career Goals
 
   def mount(_params, _session, socket) do
+    IO.puts(inspect(socket))
     {:ok, assign(socket, :test, "testing")}
   end
 

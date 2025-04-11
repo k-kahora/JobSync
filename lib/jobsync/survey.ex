@@ -101,4 +101,9 @@ defmodule Jobsync.Survey do
   def change_goal(%Goal{} = goal, attrs \\ %{}) do
     Goal.changeset(goal, attrs)
   end
+
+  def get_goal_by_user(user) do
+    Goal.Query.for_user(user)
+    |> Repo.one()
+  end
 end

@@ -71,16 +71,9 @@ defmodule JobsyncWeb.Router do
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       live "/contact", ContactLive
-
-      # jobs
-
       live "/home", HomeLive.Index, :index
-      live "/jobs", JobLive.Index, :index
-      live "/jobs/new", JobLive.Index, :new
-      live "/jobs/:id/edit", JobLive.Index, :edit
-
-      live "/jobs/:id", JobLive.Show, :show
-      live "/jobs/:id/show/edit", JobLive.Show, :edit
+      live "/survey", SurveyLive, :index
+      # jobs
     end
   end
 
