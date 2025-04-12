@@ -1,5 +1,6 @@
 defmodule JobsyncWeb.Router do
   use JobsyncWeb, :router
+  import PhoenixStorybook.Router
 
   import JobsyncWeb.UserAuth
 
@@ -17,11 +18,16 @@ defmodule JobsyncWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/" do
+    storybook_assets()
+  end
+
   scope "/", JobsyncWeb do
     pipe_through :browser
 
     get "/", PageController, :home
     live "/landing", Landing
+    live_storybook("/storybook", backend_module: JobsyncWeb.Storybook)
   end
 
   # Other scopes may use custom stacks.

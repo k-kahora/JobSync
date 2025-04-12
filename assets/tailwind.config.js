@@ -6,10 +6,13 @@ const fs = require("fs")
 const path = require("path")
 
 module.exports = {
+  important: ".jobsync-web",
   content: [
     "./js/**/*.js",
     "../lib/jobsync_web.ex",
-    "../lib/jobsync_web/**/*.*ex"
+    "../lib/jobsync_web/**/*.*ex",
+    "../storybook/**/*.*exs"
+
   ],
   theme: {
     extend: {

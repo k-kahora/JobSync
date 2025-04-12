@@ -26,7 +26,8 @@ config :jobsync, JobsyncWeb.Endpoint,
   secret_key_base: "0b7wUOi7L8/GFiXoCgmoHTCI34Vlooq68/Ib0JxiZFA0saypWGyCwh0koV4seESN",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:jobsync, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:jobsync, ~w(--watch)]}
+    tailwind: {Tailwind, :install_and_run, [:jobsync, ~w(--watch)]},
+    storybook_tailwind: {Tailwind, :install_and_run, [:storybook, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -58,7 +59,8 @@ config :jobsync, JobsyncWeb.Endpoint,
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/jobsync_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/jobsync_web/(controllers|live|components)/.*(ex|heex)$",
+      ~r"storybook/.*(exs)$"
     ]
   ]
 

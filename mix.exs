@@ -81,6 +81,7 @@ defmodule Jobsync.MixProject do
       "assets.deploy": [
         "tailwind jobsync --minify",
         "esbuild jobsync --minify",
+        "tailwind storybook --minify",
         "phx.digest"
       ]
     ]
