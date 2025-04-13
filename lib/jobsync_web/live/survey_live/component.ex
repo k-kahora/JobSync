@@ -35,7 +35,6 @@ defmodule JobsyncWeb.SurveyLive.Component do
       <%!-- <button>Save</button> --%>
       <%!-- <.form_button class="bg-stone-950 text-white">Submit</.form_button> --%>
       <section class="flex justify-between w-full mt-3">
-        <.form_button class="border border-gray-500">Cancel</.form_button>
         <.form_button class="bg-stone-950 text-white">Submit</.form_button>
       </section>
     </.form>

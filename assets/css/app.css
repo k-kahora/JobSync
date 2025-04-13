@@ -11,5 +11,12 @@
 		@apply text-7xl;
 	}
 }
+@layer components {
+	.bento {
+		/* @apply shadow-md rounded-3xl border-4 border-black-600; */
+		@apply font-mono shadow-md border-4 rounded-lg;
+
+	}
+}
 
 
