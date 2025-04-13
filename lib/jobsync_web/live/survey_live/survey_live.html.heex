@@ -1,1 +1,5 @@
-<Component.card form={@form}></Component.card>
+<%= if @goal do %>
+  <Component.card form={@form}></Component.card>
+<% else %>
+  <p>Survey Coming Soon</p>
+<% end %>

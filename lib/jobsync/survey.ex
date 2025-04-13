@@ -55,6 +55,10 @@ defmodule Jobsync.Survey do
     |> Repo.insert()
   end
 
+  def save_goal(user, attrs \\ %{}) do
+    %Goal{user_id: user.id} |> Goal.changeset(attrs) |> Repo.insert()
+  end
+
   @doc """
   Updates a goal.
 

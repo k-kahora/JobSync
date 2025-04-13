@@ -16,6 +16,23 @@ defmodule Jobsync.Survey.Goal do
     goal
     |> cast(attrs, [:target_title, :target_date, :target_salary, :user_id])
     |> validate_required([:target_title, :target_date, :target_salary, :user_id])
+    |> validate_inclusion(:target_salary, 50000..300_000)
+    |> validate_future_date(:target_date)
+    |> validate_length(:target_title, min: 5, max: 100)
     |> unique_constraint(:user_id)
+  end
+
+  def validate_future_date(changeset, field) do
+    case get_field(changeset, field) do
+      nil ->
+        changeset
+
+      date ->
+        if Date.compare(date, Date.utc_today()) == :gt do
+          changeset
+        else
+          add_error(changeset, field, "date should be in future")
+        end
+    end
   end
 end
