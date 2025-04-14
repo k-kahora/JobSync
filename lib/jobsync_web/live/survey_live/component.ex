@@ -4,6 +4,7 @@ defmodule JobsyncWeb.SurveyLive.Component do
   slot :inner_block, required: true
   use Phoenix.Component
 
+
   def hero(assigns) do
     ~H"""
     <h1 class="font-heay text-3xl">
@@ -54,11 +55,12 @@ defmodule JobsyncWeb.SurveyLive.Component do
 
   def card(assigns) do
     ~H"""
-    <div class="flex flex-col shadow-md w-80 rounded-3xl border-4 border-black-600/10">
+    <div class="flex flex-col">
       <.simple_form form={@form}></.simple_form>
     </div>
     """
   end
+
 
   def render_detail({message, values}) do
     Enum.reduce(values, message, fn {k, v}, acc ->

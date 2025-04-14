@@ -3,6 +3,7 @@ defmodule JobsyncWeb.SurveyLive do
   alias JobsyncWeb.SurveyLive.Component
   alias JobsyncWeb.SurveyLive.Show
   alias Jobsync.Survey
+  alias JobsyncWeb.Components.Widgets
 
   @impl true
 
