@@ -8,7 +8,6 @@ defmodule JobsyncWeb.SurveyLive.JobList do
   end
 
   defp assign_jobs(%{assigns: %{current_user: current_user}} = socket) do
-    # assign(socket, :jobs, Applications.get_jobs_by_user(current_user))
-    socket
+    assign(socket, :jobs, Applications.get_jobs_by_user(current_user))
   end
 end

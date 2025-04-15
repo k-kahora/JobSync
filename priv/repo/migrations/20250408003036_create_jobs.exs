@@ -4,11 +4,11 @@ defmodule Jobsync.Repo.Migrations.CreateJobs do
   def change do
     create table(:jobs) do
       add :description, :string
-      add :state, :string
-      add :date_applied, :date
+      add :date, :date
       add :company, :string
       add :title, :string
       add :notes, :string
+      add :status, :string
 
       timestamps(type: :utc_datetime)
     end
