@@ -28,6 +28,12 @@
   <div class="bento col-span-4 row-span-10">4</div>
   <div class="col-span-7 row-span-7 grid grid-rows-subgrid">
     <div class="bento row-span-1"></div>
-    <div class="bento row-span-6"></div>
+    <div class="bento row-span-6">
+      <.live_component
+        module={JobsyncWeb.SurveyLive.JobList}
+        id="job_list"
+        current_user={@current_user}
+      />
+    </div>
   </div>
 </div>
