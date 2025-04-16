@@ -14,7 +14,10 @@ defmodule Storybook.Total.Story do
           previous: 3,
           footer: "from last week",
           unit: ""
-        }
+        },
+        slots: [
+          ~s|<:col label="number"></:col>|
+        ]
       }
     ]
   end

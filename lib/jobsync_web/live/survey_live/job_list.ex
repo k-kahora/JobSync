@@ -2,6 +2,7 @@ defmodule JobsyncWeb.SurveyLive.JobList do
   use JobsyncWeb, :live_component
   alias Jobsync.Applications
   alias Jobsync.Applications.Jobs
+  import JobsyncWeb.CoreComponents
 
   def update(assigns, socket) do
     {:ok, socket |> assign(assigns) |> assign(:jobs, "No jobs") |> assign_jobs()}
