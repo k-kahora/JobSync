@@ -3,8 +3,24 @@
     1
   </div>
   <div class="col-span-11 grid grid-cols-subgrid">
-    <div class="bento col-span-3">
-      hi
+    <div class="bento col-span-3" phx-drop-target={@uploads.document.ref}>
+      <form
+        id="goal-form"
+        phx-change="validate-live"
+        phx-submit="submit-file"
+        phx-drop-target={@uploads.document.ref}
+      >
+        hi <.live_file_input upload={@uploads.document} />
+        <button>click me</button>
+      </form>
+
+      <%!-- <%= for image <- @uploads.document.entries do %> --%>
+      <%!-- <progress value={image.progress} max="100" /> --%>
+      {inspect(@uploads.document.entries)}
+      <%= for doc <- @uploads.document.entries do %>
+        <progress value={doc.progress} max="100" />
+      <% end %>
+      <%!-- # <% end %> --%>
     </div>
     <div class="bento col-start-8 col-span-4"></div>
     <%!-- <div class="bento col-span-2">1</div> --%>

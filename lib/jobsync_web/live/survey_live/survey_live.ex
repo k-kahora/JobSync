@@ -8,13 +8,42 @@ defmodule JobsyncWeb.SurveyLive do
   @impl true
 
   def mount(_params, _session, socket) do
-    IO.puts(inspect(socket))
-    {:ok, socket |> assign_empty |> clear_form}
+    socket =
+      socket
+      |> assign_empty
+      |> clear_form
+      |> allow_upload(:document, accept: ~w(.pdf .md), max_entries: 1, auto_upload: true)
+
+    {:ok, socket}
+
     # |> clear_form}
   end
 
   def assign_empty(%{assigns: %{current_user: user}} = socket) do
     assign(socket, :goal, Survey.get_goal_by_user(user) || %Survey.Goal{})
+  end
+
+  defp upload_s3(path, entry, user) do
+    key = "uploads/#{user.id}/#{entry.client_name}"
+
+    ExAws.S3.Upload.stream_file(path)
+    |> ExAws.S3.upload("jobsync-filestore", key)
+    |> ExAws.request()
+
+    {:ok, key}
+  end
+
+  def handle_event("submit-file", params, %{assigns: %{current_user: user}} = socket) do
+    image_params =
+      socket
+      |> consume_uploaded_entries(:document, fn %{path: path}, entry ->
+        upload_s3(path, entry, user)
+      end)
+
+    socket = socket |> assign(:resume_uploads, image_params)
+    IO.puts(socket |> inspect(pretty: true))
+
+    {:noreply, socket}
   end
 
   def handle_event(
@@ -41,6 +70,10 @@ defmodule JobsyncWeb.SurveyLive do
 
   def save_goal(_user, goal, params) do
     goal |> Survey.update_goal(params)
+  end
+
+  def handle_event("validate-live", _params, socket) do
+    {:noreply, socket}
   end
 
   def handle_event("validate", %{"goal" => goal_params}, %{assigns: %{goal: goal}} = socket) do
