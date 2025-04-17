@@ -20,11 +20,18 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 # Based off of
 ## https://www.tealhq.com/tools/job-tracker?utm_campaign=na_ga_pm_intent&utm_medium=cpc&utm_source=google&utm_group=&gad_source=1&gclid=Cj0KCQjw782_BhDjARIsABTv_JBLo3MRdzSUu2zF296efL_deh4wp8th-cqY1T9MDmEjOiAu4UzFCuUaAs-9EALw_wcB
 
-## Great componetn library
+## Great component library
 https://salad-storybook.fly.dev/welcome
 # TODO
 - [x] Landing Page Responsivness
 - [ ] Use generated code to add job descriptions
 - [ ] Upload a job description and extract the good stuff from it
 
+
+# Setting up AWS
+aws configure sso
+- set profile name to admin fo ex_aws to work
+- aws configure export-credentials --profile admin --format env
+can wrap the above in "eval $()"
+The above will set all the env variables for you to use with ExAws
 

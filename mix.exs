@@ -54,6 +54,13 @@ defmodule Jobsync.MixProject do
        compile: false,
        depth: 1},
       {:swoosh, "~> 1.5"},
+      # BEGIN AWS
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:hackney, "~> 1.9"},
+      {:configparser_ex, "~> 4.0"},
+      {:sweet_xml, "~> 0.6"},
+      # END AWS
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},

@@ -1,1 +1,9 @@
-<div></div>
+<div>
+  <Base.table id="why" rows={@jobs}>
+    <:col :let={job} label="company">{job.company}</:col>
+    <:col :let={job} label="title">{job.title}</:col>
+    <:col :let={job} label="status">{job.status}</:col>
+    <%!-- <:col :let={job} label="notes">{job.notes}</:col> --%>
+    <%!-- <:col :let={job} label="description">{job.description}</:col> --%>
+  </Base.table>
+</div>

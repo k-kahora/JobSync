@@ -77,6 +77,7 @@
             elixir
             nodejs
             postgresql
+            awscli2
 
             git
             beamPackages.elixir-ls
