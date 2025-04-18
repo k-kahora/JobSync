@@ -1,9 +1,11 @@
+<%!-- TODO make the button patch to the modal that allows the person to edit the entry, you can pass product to the patched linke to do this and render the form--%>
 <div>
-  <Base.table id="why" rows={@jobs}>
+  <Base.table id="why" rows={@jobs} phx->
     <:col :let={job} label="company">{job.company}</:col>
     <:col :let={job} label="title">{job.title}</:col>
     <:col :let={job} label="status">{job.status}</:col>
     <%!-- <:col :let={job} label="notes">{job.notes}</:col> --%>
     <%!-- <:col :let={job} label="description">{job.description}</:col> --%>
+    <:action :let={product}><button>{product.title}</button></:action>
   </Base.table>
 </div>

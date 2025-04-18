@@ -79,6 +79,8 @@ defmodule JobsyncWeb.Router do
       live "/contact", ContactLive
       live "/home", HomeLive.Index, :index
       live "/survey", SurveyLive, :index
+      live "/survey/new", SurveyLive, :new
+      live "/survey/:id/edit", SurveyLive, :edit
       # jobs
     end
   end

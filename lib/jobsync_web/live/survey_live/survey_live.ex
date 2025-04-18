@@ -4,6 +4,10 @@ defmodule JobsyncWeb.SurveyLive do
   alias JobsyncWeb.SurveyLive.Show
   alias Jobsync.Survey
   alias JobsyncWeb.Components.Widgets
+  # TODO
+  #   -> allow the user to attacth a s3 file key to a job struct
+  #     -> organize this setup so that its no so cary ritarde
+  #       -> basically puth all of this into the live component not into survey_live here
 
   @impl true
 
@@ -92,5 +96,10 @@ defmodule JobsyncWeb.SurveyLive do
 
   def assign_form(socket, changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  @impl true
+  def handle_params(params, _uri, socket) do
+    {:noreply, socket}
   end
 end

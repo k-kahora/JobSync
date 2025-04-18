@@ -35,6 +35,10 @@ defmodule JobsyncWeb.Components.Widgets.Base do
     attr :label, :string
   end
 
+  slot :action, doc: "slot for showing user actions in last column"
+
+  attr :row_click, :any, default: nil, doc: "func for clicking the row"
+
   attr :row_item, :any,
     default: &Function.identity/1,
     doc:
@@ -52,6 +56,11 @@ defmodule JobsyncWeb.Components.Widgets.Base do
         <tr :for={row <- @rows}>
           <td :for={{col, i} <- Enum.with_index(@col)}>
             {render_slot(col, @row_item.(row))}
+          </td>
+          <td :for={action <- @action}>
+            <span>
+              {render_slot(action, @row_item.(row))}
+            </span>
           </td>
         </tr>
       </tbody>
