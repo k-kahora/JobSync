@@ -1,28 +1,22 @@
 defmodule JobsyncWeb.SurveyLive.Show do
-  # import Phoenix.HTML
-  alias JobsyncWeb.CoreComponents
-  alias Jobsync.Survey.Goal
-  use Phoenix.Component
+  use JobsyncWeb, :live_view
 
-  attr :goal, Goal, required: false
+  alias Jobsync.Applications
+  alias JobsyncWeb.Components.Widgets.Base
 
-  def details(assigns) do
-    ~H"""
-    <div>
-      <h2 class="font-medium text-2xl"></h2>
-      <ul>
-        <li>Goal Title: {@goal.target_title}</li>
-        <li>Goal Date: {@goal.target_date}</li>
-        <li>Target salary: {@goal.target_salary}</li>
-      </ul>
-    </div>
-    <div>
-      <CoreComponents.table rows={[@goal]} id={to_string(@goal.id)}>
-        <:col let={@goal} label="Goal Title">{@goal.target_title}</:col>
-        <:col let={@goal} label="Goal Date">{@goal.target_date}</:col>
-        <:col let={@goal} label="Goal Salary">{@goal.target_salary}</:col>
-      </CoreComponents.table>
-    </div>
-    """
+  @impl true
+  def mount(_params, _session, socket) do
+    {:ok, socket}
   end
+
+  @impl true
+  def handle_params(%{"id" => id}, _, socket) do
+    {:noreply,
+     socket
+     |> assign(:page_title, page_title(socket.assigns.live_action))
+     |> assign(:job, Applications.get_jobs!(id))}
+  end
+
+  defp page_title(:show), do: "Show Product"
+  defp page_title(:edit), do: "Edit Product"
 end

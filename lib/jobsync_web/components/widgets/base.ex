@@ -53,7 +53,11 @@ defmodule JobsyncWeb.Components.Widgets.Base do
         </tr>
       </thead>
       <tbody>
-        <tr :for={row <- @rows} phx-click={@row_click && @row_click.(row)} class={["p-0", @row_click && "hover:cursor-pointer"]} >
+        <tr
+          :for={row <- @rows}
+          phx-click={@row_click && @row_click.(row)}
+          class={["p-0", @row_click && "hover:cursor-pointer"]}
+        >
           <td :for={{col, i} <- Enum.with_index(@col)}>
             {render_slot(col, @row_item.(row))}
           </td>
@@ -65,6 +69,45 @@ defmodule JobsyncWeb.Components.Widgets.Base do
         </tr>
       </tbody>
     </table>
+    """
+  end
+
+  slot :item, required: true do
+    attr :title, :string, required: true
+  end
+
+  def list(assigns) do
+    ~H"""
+    <div>
+      <dl>
+        <div :for={item <- @item}>
+          <dl>{item.title}</dl>
+          <dt>render_slot(item)</dt>
+        </div>
+      </dl>
+    </div>
+    """
+  end
+
+  def simple_form(assigns) do
+    ~H"""
+    <.form>
+      <.input field={@form[:title]} label="title" />
+    </.form>
+    """
+  end
+
+  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    assigns
+    |> assign(id: field.id)
+    |> assign(:name, field.name)
+    |> assign_new(:value, fn -> field.value end)
+    |> input()
+  end
+
+  def input(%{type: "text" = assigns}) do
+    ~H"""
+    <input name={@name} id={@id} value={@value} type="text" />
     """
   end
 end

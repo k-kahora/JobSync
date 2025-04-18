@@ -1,0 +1,23 @@
+<p>hell</p>
+<.link patch={~p"/survey"}>Go back</.link>
+<.link patch={~p"/survey/#{@job}/show/edit"}>
+  edit
+</.link>
+<.list>
+  <:item title="Company">
+    {@job.company}
+  </:item>
+  <:item title="title">
+    {@job.title}
+  </:item>
+  <:item title="status">
+    {@job.status}
+  </:item>
+  <:item title="resume">
+    {@job.resume_key}
+  </:item>
+</.list>
+<.modal :if={@live_action in [:edit]} show="true" id="garbage-id">
+  <h1>Editing baby</h1>
+  <.simple_form form={@form}></.simple_form>
+</.modal>
