@@ -6,8 +6,8 @@
     <:col :let={job} label="status">{job.status}</:col>
     <%!-- <:col :let={job} label="notes">{job.notes}</:col> --%>
     <%!-- <:col :let={job} label="description">{job.description}</:col> --%>
-    <:action :let={product}>
-      <.link patch={~p"/survey/show"}><button>Show</button></.link>
+    <:action :let={job}>
+      <.link patch={~p"/survey/#{job}/edit"}><button>Edit</button></.link>
     </:action>
   </Base.table>
 </div>

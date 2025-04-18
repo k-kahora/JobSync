@@ -76,12 +76,16 @@ defmodule JobsyncWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
+      # main page
+      # edit page -> modal
+      # show page is a new live view
+
       live "/contact", ContactLive
       live "/home", HomeLive.Index, :index
       live "/survey", SurveyLive, :index
       live "/survey/new", SurveyLive, :new
       live "/survey/:id/edit", SurveyLive, :edit
-      live "/survey/:id/", SurveyLive, :show
+      live "/survey/:id/", SurveyLive.Show, :show
       # jobs
     end
   end

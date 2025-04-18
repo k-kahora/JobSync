@@ -106,6 +106,8 @@ defmodule JobsyncWeb.SurveyLive do
   end
 
   def apply_action(socket, :show, %{"id" => id} = params) do
+    IO.puts("id -> #{params |> inspect}")
+
     socket
     |> assign(:page_title, "Show Job")
     |> assign(:job, Applications.get_jobs!(id |> String.to_integer()))
