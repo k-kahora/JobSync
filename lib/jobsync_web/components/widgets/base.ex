@@ -53,7 +53,7 @@ defmodule JobsyncWeb.Components.Widgets.Base do
         </tr>
       </thead>
       <tbody>
-        <tr :for={row <- @rows}>
+        <tr :for={row <- @rows} phx-click={@row_click && @row_click.(row)} class={["p-0", @row_click && "hover:cursor-pointer"]} >
           <td :for={{col, i} <- Enum.with_index(@col)}>
             {render_slot(col, @row_item.(row))}
           </td>

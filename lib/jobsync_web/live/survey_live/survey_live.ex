@@ -2,6 +2,7 @@ defmodule JobsyncWeb.SurveyLive do
   use JobsyncWeb, :live_view
   alias JobsyncWeb.SurveyLive.Component
   alias JobsyncWeb.SurveyLive.Show
+  alias Jobsync.Applications
   alias Jobsync.Survey
   alias JobsyncWeb.Components.Widgets
   # TODO
@@ -45,7 +46,6 @@ defmodule JobsyncWeb.SurveyLive do
       end)
 
     socket = socket |> assign(:resume_uploads, image_params)
-    IO.puts(socket |> inspect(pretty: true))
 
     {:noreply, socket}
   end
@@ -100,6 +100,18 @@ defmodule JobsyncWeb.SurveyLive do
 
   @impl true
   def handle_params(params, _uri, socket) do
+    socket = socket |> apply_action(socket.assigns.live_action, params)
+    # IO.puts(socket |> inspect(pretty: true))
     {:noreply, socket}
+  end
+
+  def apply_action(socket, :show, %{"id" => id} = params) do
+    socket
+    |> assign(:page_title, "Show Job")
+    |> assign(:job, Applications.get_jobs!(id |> String.to_integer()))
+  end
+
+  def apply_action(socket, _, params) do
+    socket
   end
 end
