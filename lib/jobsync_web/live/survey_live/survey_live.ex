@@ -15,16 +15,12 @@ defmodule JobsyncWeb.SurveyLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> allow_upload(:document, accept: ~w(.pdf .md), max_entries: 1, auto_upload: true)
-      |> apply_jobs()
+      |> allow_upload(:document, accept: ~w(.pdf .md), max_entries: 1)
+      |> stream(:jobs, Applications.get_jobs_by_user(socket.assigns.current_user))
 
     {:ok, socket}
 
     # |> clear_form}
-  end
-
-  defp apply_jobs(socket) do
-    stream(socket, :jobs, Applications.get_jobs_by_user(socket.assigns.current_user))
   end
 
   defp upload_s3(path, entry, user) do
@@ -42,7 +38,8 @@ defmodule JobsyncWeb.SurveyLive do
     socket =
       socket
       |> apply_action(assigns.live_action, params)
-      |> apply_jobs()
+
+    # |> apply_jobs()
 
     {:noreply, socket}
   end
@@ -86,5 +83,26 @@ defmodule JobsyncWeb.SurveyLive do
   def handle_info({JobsyncWeb.SurveyLive.FormComponent, {:saved, job}}, socket) do
     IO.inspect(socket.assigns[:current_user], label: "CURRENT USER AT MOUNT")
     {:noreply, stream_insert(socket, :jobs, job)}
+  end
+
+  def handle_event("delete", %{"id" => id}, socket) do
+    job = Applications.get_jobs!(id)
+    {:ok, _} = Applications.delete_jobs(job)
+    {:noreply, stream_delete(socket, :jobs, job)}
+  end
+
+  def handle_event("validate-upload", params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("submit-file", params, socket) do
+    uploaded_files =
+      consume_uploaded_entries(socket, :document, fn %{path: path}, entry ->
+        {:ok, key} = upload_s3(path, entry, socket.assigns.current_user)
+        IO.puts(key)
+        {:ok, key}
+      end)
+
+    {:noreply, socket}
   end
 end

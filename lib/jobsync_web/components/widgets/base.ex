@@ -39,6 +39,8 @@ defmodule JobsyncWeb.Components.Widgets.Base do
 
   attr :row_click, :any, default: nil, doc: "func for clicking the row"
 
+  attr :rest, :global
+
   attr :row_item, :any,
     default: &Function.identity/1,
     doc:
@@ -52,7 +54,7 @@ defmodule JobsyncWeb.Components.Widgets.Base do
           <th :for={col <- @col}>{col[:label]}</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody phx-update="stream" id="whateve">
         <tr
           :for={{id, row} <- @rows}
           phx-click={@row_click && @row_click.({id, row})}
@@ -109,6 +111,7 @@ defmodule JobsyncWeb.Components.Widgets.Base do
   end
 
   attr :type, :string, default: "text", values: ~w(text)
+  attr :label, :string, required: true
 
   attr :field, Phoenix.HTML.FormField
 
@@ -125,12 +128,14 @@ defmodule JobsyncWeb.Components.Widgets.Base do
 
   def input(%{type: "date"} = assigns) do
     ~H"""
+    <label>{@label}</label>
     <input name={@name} id="thing-date" value={@value} type="date" />
     """
   end
 
   def input(%{type: "text"} = assigns) do
     ~H"""
+    <label>{@label}</label>
     <input name={@name} id="thing" value={@value} type="text" />
     """
   end

@@ -2,13 +2,19 @@
   <div class="row-span-11 bento"></div>
   <div class="col-span-11 grid grid-cols-subgrid">
     <div class="bento col-span-3" phx-drop-target={@uploads.document.ref}>
-      <form id="goal-form" phx-submit="submit-file" phx-drop-target={@uploads.document.ref}>
+      <form
+        id="goal-form"
+        phx-submit="submit-file"
+        phx-change="validate-upload"
+        phx-drop-target={@uploads.document.ref}
+      >
         hi <.live_file_input upload={@uploads.document} />
-        <button>click me</button>
+        <button type="submit">click me</button>
       </form>
 
       <%!-- <%= for image <- @uploads.document.entries do %> --%>
       <%!-- <progress value={image.progress} max="100" /> --%>
+
       {inspect(@uploads.document.entries)}
       <%= for doc <- @uploads.document.entries do %>
         <progress value={doc.progress} max="100" />
@@ -40,6 +46,7 @@
         rows={@streams.jobs}
         action={@live_action}
         row_click={fn {id, job} -> JS.navigate(~p"/survey/#{job}") end}
+        phx-update="stream"
       >
         <:col :let={{_, job}} label="company">{job.company}</:col>
         <:col :let={{_, job}} label="title">{job.title}</:col>
@@ -48,6 +55,9 @@
         <%!-- <:col :let={job} label="description">{job.description}</:col> --%>
         <:action :let={{_id, job}}>
           <.link patch={~p"/survey/#{job}/edit"}><button>Edit</button></.link>
+          <.link phx-click={JS.push("delete", value: %{id: job.id})} data-confirm="Are you sure">
+            delete
+          </.link>
         </:action>
       </Base.table>
     </div>
