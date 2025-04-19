@@ -16,15 +16,15 @@ defmodule JobsyncWeb.SurveyLive do
     socket =
       socket
       |> allow_upload(:document, accept: ~w(.pdf .md), max_entries: 1, auto_upload: true)
-      |> assign_jobs()
+      |> apply_jobs()
 
     {:ok, socket}
 
     # |> clear_form}
   end
 
-  defp assign_jobs(%{assigns: %{current_user: current_user}} = socket) do
-    stream(socket, :jobs, Applications.get_jobs_by_user(current_user))
+  defp apply_jobs(socket) do
+    stream(socket, :jobs, Applications.get_jobs_by_user(socket.assigns.current_user))
   end
 
   defp upload_s3(path, entry, user) do
@@ -38,10 +38,12 @@ defmodule JobsyncWeb.SurveyLive do
   end
 
   @impl true
-  def handle_params(params, _uri, socket) do
-    socket = socket |> assign_jobs() |> apply_action(socket.assigns.live_action, params)
+  def handle_params(params, _uri, %{assigns: assigns} = socket) do
+    socket =
+      socket
+      |> apply_action(assigns.live_action, params)
+      |> apply_jobs()
 
-    # IO.puts(socket |> inspect(pretty: true))
     {:noreply, socket}
   end
 
@@ -82,6 +84,7 @@ defmodule JobsyncWeb.SurveyLive do
   end
 
   def handle_info({JobsyncWeb.SurveyLive.FormComponent, {:saved, job}}, socket) do
-    {:noreply, assign_jobs(socket)}
+    IO.inspect(socket.assigns[:current_user], label: "CURRENT USER AT MOUNT")
+    {:noreply, stream_insert(socket, :jobs, job)}
   end
 end
