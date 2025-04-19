@@ -19,4 +19,8 @@ defmodule JobsyncWeb.SurveyLive.Show do
 
   defp page_title(:show), do: "Show Product"
   defp page_title(:edit), do: "Edit Product"
+
+  def handle_event("save", _params, socket) do
+    {:noreply, socket}
+  end
 end

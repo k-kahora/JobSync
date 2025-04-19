@@ -19,5 +19,10 @@
 </.list>
 <.modal :if={@live_action in [:edit]} show="true" id="garbage-id">
   <h1>Editing baby</h1>
-  <.simple_form form={@form}></.simple_form>
+  <.live_component
+    module={JobsyncWeb.SurveyLive.FormComponent}
+    id={@job.id}
+    job={@job}
+    patch={~p"/survey/#{@job}"}
+  />
 </.modal>

@@ -1,5 +1,10 @@
 <%!-- TODO make the button patch to the modal that allows the person to edit the entry, you can pass product to the patched linke to do this and render the form--%>
 <div>
+  <%!-- <.modal :if={@live_action in [:edit]} show="true" id="show-on-cancel"> --%>
+  <%!--   <.live_component module={JobsyncWeb.SurveyLive.FormComponent} patch={~p"/survey"} /> > --%>
+  <%!-- </.modal> --%>
+  <%!-- {@live_action} --%>
+
   <Base.table id="why" rows={@jobs} row_click={fn job -> JS.navigate(~p"/survey/#{job}") end}>
     <:col :let={job} label="company">{job.company}</:col>
     <:col :let={job} label="title">{job.title}</:col>

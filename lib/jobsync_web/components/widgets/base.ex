@@ -89,25 +89,48 @@ defmodule JobsyncWeb.Components.Widgets.Base do
     """
   end
 
+  attr :form, :any, required: true
+  attr :as, :any, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  slot :actions
+
   def simple_form(assigns) do
     ~H"""
-    <.form>
-      <.input field={@form[:title]} label="title" />
+    <.form for={@form} {@rest}>
+      {render_slot(@inner_block)}
+      <div :for={action <- @actions}>
+        {render_slot(action)}
+      </div>
     </.form>
     """
   end
 
+  attr :type, :string, default: "text", values: ~w(text)
+
+  attr :field, Phoenix.HTML.FormField
+
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
-    assigns
-    |> assign(id: field.id)
-    |> assign(:name, field.name)
-    |> assign_new(:value, fn -> field.value end)
-    |> input()
+    assigns =
+      assigns
+      |> assign(field: nil)
+      |> assign(id: field.id)
+      |> assign(name: field.name)
+      |> assign_new(:value, fn -> field.value end)
+
+    input(assigns)
   end
 
-  def input(%{type: "text" = assigns}) do
+  def input(%{type: "date"} = assigns) do
     ~H"""
-    <input name={@name} id={@id} value={@value} type="text" />
+    <input name={@name} id="thing-date" value={@value} type="date" />
+    """
+  end
+
+  def input(%{type: "text"} = assigns) do
+    ~H"""
+    <input name={@name} id="thing" value={@value} type="text" />
     """
   end
 end
