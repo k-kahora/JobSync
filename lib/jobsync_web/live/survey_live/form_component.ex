@@ -1,19 +1,19 @@
 defmodule JobsyncWeb.SurveyLive.FormComponent do
   use JobsyncWeb, :live_component
   alias Jobsync.Applications
-  alias JobsyncWeb.Components.Widgets.Base
+  alias JobsyncWeb.Components.Widgets.Base, as: B
 
   def render(assigns) do
     ~H"""
     <div>
       <%!-- <Base.simple_form form={@form} /> --%>
-      <Base.simple_form form={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
-        <Base.input type="text" label="title" field={@form[:title]} />
-        <Base.input type="text" label="company" field={@form[:company]} />
-        <Base.input type="text" label="notes" field={@form[:notes]} />
-        <Base.input type="text" label="description" field={@form[:description]} />
-        <Base.input type="text" label="status" field={@form[:status]} />
-        <Base.input type="date" label="date" field={@form[:date]} />
+      <B.simple_form form={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
+        <B.input type="text" label="title" field={@form[:title]} />
+        <B.input type="text" label="company" field={@form[:company]} />
+        <B.input type="text" label="notes" field={@form[:notes]} />
+        <B.input type="text" label="description" field={@form[:description]} />
+        <B.input type="text" label="status" field={@form[:status]} />
+        <B.input type="date" label="date" field={@form[:date]} />
 
         <%!-- <form --%>
         <%!--   id="goal-form" --%>
@@ -26,19 +26,24 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
         <:actions>
           <button>Save</button>
         </:actions>
-      </Base.simple_form>
+      </B.simple_form>
     </div>
     """
   end
 
-  defp upload_s3(path, entry, user_id) do
-    key = "uploads/#{user_id}/#{entry.client_name}"
+  defp upload_s3(path, entry, user_id, job) do
+    key =
+      "uploads/#{user_id}/#{job["company"]}-#{job["title"]}-#{short_url(4)}-#{entry.client_name}"
 
     ExAws.S3.Upload.stream_file(path)
     |> ExAws.S3.upload("jobsync-filestore", key)
     |> ExAws.request()
 
     {:ok, key}
+  end
+
+  def short_url(size) do
+    :crypto.strong_rand_bytes(size) |> Base.url_encode64(padding: false) |> binary_part(0, size)
   end
 
   def update(%{job: job} = assigns, socket) do
@@ -61,7 +66,7 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
       ) do
     uploaded_files =
       consume_uploaded_entries(socket, :document, fn %{path: path}, entry ->
-        {:ok, key} = upload_s3(path, entry, socket.assigns.job.user_id)
+        {:ok, key} = upload_s3(path, entry, socket.assigns.job.user_id, job_params)
         IO.puts(key)
         {:ok, key}
       end)

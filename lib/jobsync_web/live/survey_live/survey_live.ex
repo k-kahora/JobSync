@@ -23,16 +23,6 @@ defmodule JobsyncWeb.SurveyLive do
     # |> clear_form}
   end
 
-  defp upload_s3(path, entry, user) do
-    key = "uploads/#{user.id}/#{entry.client_name}"
-
-    ExAws.S3.Upload.stream_file(path)
-    |> ExAws.S3.upload("jobsync-filestore", key)
-    |> ExAws.request()
-
-    {:ok, key}
-  end
-
   @impl true
   def handle_params(params, _uri, %{assigns: assigns} = socket) do
     socket =
@@ -95,14 +85,16 @@ defmodule JobsyncWeb.SurveyLive do
     {:noreply, socket}
   end
 
-  def handle_event("submit-file", params, socket) do
-    uploaded_files =
-      consume_uploaded_entries(socket, :document, fn %{path: path}, entry ->
-        {:ok, key} = upload_s3(path, entry, socket.assigns.current_user)
-        IO.puts(key)
-        {:ok, key}
-      end)
+  def handle_event("download", %{"resume_key" => s3_key}, socket) do
+    {:ok, %{body: body}} = ExAws.S3.get_object("jobsync-filestore", s3_key) |> ExAws.request()
+    # IO.puts(inspect(object, pretty: true))
+    {:ok, url} =
+      ExAws.Config.new(:s3)
+      |> ExAws.S3.presigned_url(:get, "jobsync-filestore", s3_key, expires_in: 10)
 
-    {:noreply, socket}
+    IO.puts(url)
+
+    # {:noreply, socket}
+    {:noreply, push_event(socket, "open_new_tab", %{url: url})}
   end
 end

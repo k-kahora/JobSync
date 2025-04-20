@@ -37,7 +37,7 @@
   <div class="bento col-span-4 row-span-10">4</div>
   <div class="col-span-7 row-span-7 grid grid-rows-subgrid">
     <div class="bento row-span-1"></div>
-    <div class="bento row-span-6">
+    <div class="bento row-span-6" id="hook-guy" phx-hook="DownloadHook">
       <.link patch={~p"/survey/new"}>
         New
       </.link>
@@ -53,10 +53,13 @@
         <:col :let={{_, job}} label="status">{job.status}</:col>
         <%!-- <:col :let={job} label="notes">{job.notes}</:col> --%>
         <%!-- <:col :let={job} label="description">{job.description}</:col> --%>
-        <:action :let={{_id, job}}>
+        <:action :let={{id, job}}>
           <.link patch={~p"/survey/#{job}/edit"}><button>Edit</button></.link>
           <.link phx-click={JS.push("delete", value: %{id: job.id})} data-confirm="Are you sure">
             delete
+          </.link>
+          <.link phx-click={JS.push("download", value: %{resume_key: job.resume_key})} id={id}>
+            Download
           </.link>
         </:action>
       </Base.table>

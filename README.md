@@ -27,6 +27,8 @@ https://salad-storybook.fly.dev/welcome
 - [ ] Use generated code to add job descriptions
 - [ ] Upload a job description and extract the good stuff from it
 - [ ] Do not need job list to be a live component
+- [ ] Editing a entry duplicates, very weird
+- [ ] Right now all external requests to AWS assume success, not good for prod, need asserts and tests 
 
 
 # Setting up AWS
