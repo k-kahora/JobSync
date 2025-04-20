@@ -129,14 +129,14 @@ defmodule JobsyncWeb.Components.Widgets.Base do
   def input(%{type: "date"} = assigns) do
     ~H"""
     <label>{@label}</label>
-    <input name={@name} id="thing-date" value={@value} type="date" />
+    <input name={@name} id={@id} value={@value} type="date" />
     """
   end
 
   def input(%{type: "text"} = assigns) do
     ~H"""
     <label>{@label}</label>
-    <input name={@name} id="thing" value={@value} type="text" />
+    <input name={@name} id={@id} value={@value} type="text" />
     """
   end
 end

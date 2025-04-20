@@ -11,6 +11,8 @@ defmodule Jobsync.Applications.Jobs do
     field :company, :string
     field :notes, :string
     field :resume_key, :string
+    field :cover_letter, :string
+    field :job_description, :string
     belongs_to :user, User
 
     timestamps(type: :utc_datetime)
@@ -19,8 +21,19 @@ defmodule Jobsync.Applications.Jobs do
   @doc false
   def changeset(jobs, attrs) do
     jobs
-    |> cast(attrs, [:description, :date, :company, :title, :notes, :status, :user_id, :resume_key])
-    |> validate_required([:description, :date, :company, :title, :notes, :status, :user_id])
+    |> cast(attrs, [
+      :description,
+      :date,
+      :company,
+      :title,
+      :notes,
+      :status,
+      :user_id,
+      :resume_key,
+      :job_description,
+      :cover_letter
+    ])
+    |> validate_required([:date, :company, :title, :status, :user_id])
     |> foreign_key_constraint(:user_id)
   end
 end
