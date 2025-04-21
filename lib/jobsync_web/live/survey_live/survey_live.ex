@@ -15,7 +15,6 @@ defmodule JobsyncWeb.SurveyLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> allow_upload(:document, accept: ~w(.pdf .md), max_entries: 1)
       |> stream(:jobs, Applications.get_jobs_by_user(socket.assigns.current_user))
 
     {:ok, socket}
@@ -45,7 +44,13 @@ defmodule JobsyncWeb.SurveyLive do
   def apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "new Job")
-    |> assign(:job, %Applications.Jobs{user_id: socket.assigns.current_user.id})
+    |> assign(:job, %Applications.Jobs{
+      user_id: socket.assigns.current_user.id,
+      date: ~D[2025-08-24],
+      title: "Test Engineer",
+      company: "Ramp",
+      status: :applied
+    })
 
     # |> assign(:job, Applications.get_jobs!(id |> String.to_integer()))
   end

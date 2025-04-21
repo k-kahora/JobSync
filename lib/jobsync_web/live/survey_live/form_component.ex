@@ -22,6 +22,10 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
         <%!--   phx-drop-target={@uploads.document.ref} --%>
         <%!-- > --%>
         <.live_file_input upload={@uploads.document} />
+
+        <.live_file_input upload={@uploads.job_description} />
+
+        <.live_file_input upload={@uploads.cover_letter} />
         <%!-- </form> --%>
         <:actions>
           <button>Save</button>
@@ -31,15 +35,17 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
     """
   end
 
-  defp upload_s3(path, entry, user_id, job) do
-    key =
-      "uploads/#{user_id}/#{job["company"]}-#{job["title"]}-#{short_url(4)}-#{entry.client_name}"
+  defp upload_s3(user_id, job) do
+    fn %{path: path}, entry ->
+      key =
+        "uploads/#{user_id}/#{job["company"]}-#{job["title"]}-#{short_url(4)}-#{entry.client_name}"
 
-    ExAws.S3.Upload.stream_file(path)
-    |> ExAws.S3.upload("jobsync-filestore", key)
-    |> ExAws.request()
+      ExAws.S3.Upload.stream_file(path)
+      |> ExAws.S3.upload("jobsync-filestore", key)
+      |> ExAws.request()
 
-    {:ok, key}
+      {:ok, key}
+    end
   end
 
   def short_url(size) do
@@ -50,7 +56,9 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> allow_upload(:document, accept: ~w(.pdf .md), max_entries: 1, auto_upload: true)
+     |> allow_upload(:document, accept: ~w(.pdf .md .txt), max_entries: 1)
+     |> allow_upload(:cover_letter, accept: ~w(.pdf .md .txt), max_entries: 1)
+     |> allow_upload(:job_description, accept: ~w(.pdf .txt), max_entries: 1)
      |> assign_new(:form, fn -> to_form(Applications.change_jobs(job)) end)}
   end
 
@@ -64,14 +72,33 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
         %{"jobs" => job_params} = _,
         socket
       ) do
-    uploaded_files =
-      consume_uploaded_entries(socket, :document, fn %{path: path}, entry ->
-        {:ok, key} = upload_s3(path, entry, socket.assigns.job.user_id, job_params)
-        IO.puts(key)
-        {:ok, key}
-      end)
+    uploaded_files = %{
+      resume:
+        consume_uploaded_entries(
+          socket,
+          :document,
+          upload_s3(socket.assigns.job.user_id, job_params)
+        ),
+      cover_letter:
+        consume_uploaded_entries(
+          socket,
+          :cover_letter,
+          upload_s3(socket.assigns.job.user_id, job_params)
+        ),
+      job_description:
+        consume_uploaded_entries(
+          socket,
+          :job_description,
+          upload_s3(socket.assigns.job.user_id, job_params)
+        )
+    }
 
-    job_params = Map.put(job_params, "resume_key", uploaded_files |> List.first())
+    job_params =
+      job_params
+      |> Map.put("resume_key", uploaded_files.resume |> List.first())
+      |> Map.put("cover_letter", uploaded_files.cover_letter |> List.first())
+      |> Map.put("job_description", uploaded_files.job_description |> List.first())
+
     save_product(socket, socket.assigns.action, job_params)
   end
 

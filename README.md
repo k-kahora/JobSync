@@ -29,6 +29,8 @@ https://salad-storybook.fly.dev/welcome
 - [ ] Do not need job list to be a live component
 - [ ] Editing a entry duplicates, very weird
 - [ ] Right now all external requests to AWS assume success, not good for prod, need asserts and tests 
+- [ ] s3 key does not need to be shown to uploads, maybe in sql there is a way to map a key and then an additional string that is an alias of some sort
+- [ ] Download button for all three file uploads
 
 
 # Setting up AWS
