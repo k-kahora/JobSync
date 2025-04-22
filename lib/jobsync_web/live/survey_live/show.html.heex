@@ -14,18 +14,37 @@
     {@job.status}
   </:item>
   <:item title="cover_letter">
-    {@job.cover_letter}
+    {show_key(@job.cover_letter)}
   </:item>
   <:item title="job description">
-    {@job.job_description}
+    {show_key(@job.job_description)}
   </:item>
   <:item title="resume">
-    {@job.resume_key}
+    {show_key(@job.resume_key)}
   </:item>
   <:item title="notes">
     {@job.notes}
   </:item>
 </.list>
+
+<div id="hook-guy" phx-hook="DownloadHook" class="flex gap-40">
+  <%= if @job.resume_key do %>
+    <.link phx-click={JS.push("download", value: %{resume_key: @job.resume_key})}>
+      Download Resume
+    </.link>
+  <% end %>
+  <%= if @job.cover_letter do %>
+    <.link phx-click={JS.push("download", value: %{resume_key: @job.cover_letter})}>
+      Download Cover Letter
+    </.link>
+  <% end %>
+  <%= if @job.job_description do %>
+    <.link phx-click={JS.push("download", value: %{resume_key: @job.job_description})}>
+      Download JobDescription
+    </.link>
+  <% end %>
+</div>
+
 <.modal :if={@live_action in [:edit]} show="true" id="garbage-id">
   <h1>Editing baby</h1>
   <.live_component

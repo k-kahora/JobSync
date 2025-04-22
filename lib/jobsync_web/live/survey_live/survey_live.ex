@@ -89,17 +89,4 @@ defmodule JobsyncWeb.SurveyLive do
   def handle_event("validate-upload", params, socket) do
     {:noreply, socket}
   end
-
-  def handle_event("download", %{"resume_key" => s3_key}, socket) do
-    {:ok, %{body: body}} = ExAws.S3.get_object("jobsync-filestore", s3_key) |> ExAws.request()
-    # IO.puts(inspect(object, pretty: true))
-    {:ok, url} =
-      ExAws.Config.new(:s3)
-      |> ExAws.S3.presigned_url(:get, "jobsync-filestore", s3_key, expires_in: 10)
-
-    IO.puts(url)
-
-    # {:noreply, socket}
-    {:noreply, push_event(socket, "open_new_tab", %{url: url})}
-  end
 end

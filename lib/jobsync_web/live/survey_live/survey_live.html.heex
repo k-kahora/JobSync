@@ -39,9 +39,6 @@
           <.link phx-click={JS.push("delete", value: %{id: job.id})} data-confirm="Are you sure">
             delete
           </.link>
-          <.link phx-click={JS.push("download", value: %{resume_key: job.resume_key})}>
-            Download
-          </.link>
         </:action>
       </Base.table>
     </div>

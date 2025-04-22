@@ -110,12 +110,14 @@ defmodule JobsyncWeb.Components.Widgets.Base do
     """
   end
 
-  attr :type, :string, default: "text", values: ~w(text)
-  attr :label, :string, required: true
+  attr :type, :string, default: "text", values: ~w(text hidden date)
+  attr :label, :string, required: false
 
   attr :field, Phoenix.HTML.FormField
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    IO.puts(field.name)
+
     assigns =
       assigns
       |> assign(field: nil)
@@ -137,6 +139,12 @@ defmodule JobsyncWeb.Components.Widgets.Base do
     ~H"""
     <label>{@label}</label>
     <input name={@name} id={@id} value={@value} type="text" />
+    """
+  end
+
+  def input(%{type: "hidden"} = assigns) do
+    ~H"""
+    <input name={@name} id={@id} value={@value} type="hidden" />
     """
   end
 end

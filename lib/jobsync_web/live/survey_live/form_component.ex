@@ -21,10 +21,23 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
         <%!--   phx-change="validate-upload" --%>
         <%!--   phx-drop-target={@uploads.document.ref} --%>
         <%!-- > --%>
+        <%!-- {assigns |> inspect()} --%>
+        <.input type="hidden" field={@form[:resume_key]} />
+        <%= if assigns.job.resume_key do %>
+          {"Resume uploaded #{assigns.job.resume_key}"}
+        <% end %>
         <.live_file_input upload={@uploads.document} />
 
+        <.input type="hidden" field={@form[:job_description]} />
+        <%= if assigns.job.job_description do %>
+          {"#{assigns.job.job_description}"}
+        <% end %>
         <.live_file_input upload={@uploads.job_description} />
 
+        <.input type="hidden" field={@form[:cover_letter]} />
+        <%= if assigns.job.cover_letter do %>
+          {"#{assigns.job.cover_letter}"}
+        <% end %>
         <.live_file_input upload={@uploads.cover_letter} />
         <%!-- </form> --%>
         <:actions>
@@ -95,9 +108,15 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
 
     job_params =
       job_params
-      |> Map.put("resume_key", uploaded_files.resume |> List.first())
-      |> Map.put("cover_letter", uploaded_files.cover_letter |> List.first())
-      |> Map.put("job_description", uploaded_files.job_description |> List.first())
+      |> Map.put("resume_key", List.first(uploaded_files.resume) || socket.assigns.job.resume_key)
+      |> Map.put(
+        "cover_letter",
+        List.first(uploaded_files.cover_letter) || socket.assigns.job.cover_letter
+      )
+      |> Map.put(
+        "job_description",
+        List.first(uploaded_files.job_description) || socket.assigns.job.job_description
+      )
 
     save_product(socket, socket.assigns.action, job_params)
   end
