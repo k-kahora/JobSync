@@ -54,7 +54,7 @@ defmodule JobsyncWeb.SurveyLive.FormComponent do
         "uploads/#{user_id}/#{job["company"]}-#{job["title"]}-#{short_url(4)}-#{entry.client_name}"
 
       ExAws.S3.Upload.stream_file(path)
-      |> ExAws.S3.upload("jobsync-filestore", key)
+      |> ExAws.S3.upload("jobsync-filestore-sql", key)
       |> ExAws.request()
 
       {:ok, key}
