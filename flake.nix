@@ -5,12 +5,21 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-23.11";
     # otherNixpkgs.url = "github:cw789/nixpkgs/erlang_update";
     flake-utils.url = "github:numtide/flake-utils";
+    # nixos-generators = {
+    #   url = "github:nix-community/nixos-generators";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    npmlock2nix = {
+      url = "github:nix-community/npmlock2nix";
+      flake = false;
+    };
   };
 
   # outputs = { self, nixpkgs, otherNixpkgs, flake-utils }:
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, npmlock2nix}:
     flake-utils.lib.eachDefaultSystem (system:
       let
         # elixir_master_overlay = (self: super: {
@@ -33,10 +42,11 @@
         # pkgs = import <nixpkgs> { overlays = [ elixir_1_13_1_overlay ]; };
 
 
-        # pkgs = nixpkgs.legacyPackages.${system};
-        pkgs = import nixpkgs {
-          inherit system;
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
+        # pkgs = import nixpkgs {
+        #   # making terraform part of the dev shell exceeds dist size setting TMPDIR did not work, I am thinking its a permission thing on where I set tmp dir I set it to /nix/tmp which was a dir I just created
+        #   inherit system;
+        # };
         # otherPkgs = otherNixpkgs.legacyPackages.${system};
         LANG = "C.UTF-8";
         # LANG= "en_US.UTF-8";
@@ -49,74 +59,77 @@
 
         # erlang = pkgs.beam.interpreters.erlangR25;
         # erlang = otherPkgs.beam.interpreters.erlangR25;
-        elixir = pkgs.beam.packages.erlang_26.elixir_1_14;
-        # elixir = otherPkgs.beam.packages.erlangR25.elixir_1_14;
-        nodejs = pkgs.nodejs-18_x;
+erl = pkgs.beam.interpreters.erlang_26;
+erlangPackages = pkgs.beam.packagesWith erl;
+elixir = pkgs.beam.packages.erlang_26.elixir_1_14;
+nodejs = pkgs.nodejs-18_x;        
         postgresql = pkgs.postgresql_14;
+        npm2nix = pkgs.callPackage npmlock2nix { inherit pkgs; };
       in
-      {
-        devShells.default = pkgs.mkShell {
-          inherit LANG;
-          # PGPORT = "5433"; # default 5432
+        {
+          devShells.default = pkgs.mkShell {
+            inherit LANG;
+            # PGPORT = "5433"; # default 5432
 
-          # enable IEx shell history
-          ERL_AFLAGS = "-kernel shell_history enabled";
-          # # In IEX: `open Enum.map`
-          # ELIXIR_EDITOR = "code --goto __FILE__:__LINE__";
+            # enable IEx shell history
+            ERL_AFLAGS = "-kernel shell_history enabled";
+            # # In IEX: `open Enum.map`
+            # ELIXIR_EDITOR = "code --goto __FILE__:__LINE__";
 
-          ##########################################################
-          # Without  this, almost  everything  fails with  locale issues  when
-          # using `nix-shell --pure` (at least on NixOS).
-          # See
-          # + https://github.com/NixOS/nix/issues/318#issuecomment-52986702
-          # + http://lists.linuxfromscratch.org/pipermail/lfs-support/2004-June/023900.html
-          ##########################################################
-          LOCALE_ARCHIVE = if pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+            ##########################################################
+            # Without  this, almost  everything  fails with  locale issues  when
+            # using `nix-shell --pure` (at least on NixOS).
+            # See
+            # + https://github.com/NixOS/nix/issues/318#issuecomment-52986702
+            # + http://lists.linuxfromscratch.org/pipermail/lfs-support/2004-June/023900.html
+            ##########################################################
+            LOCALE_ARCHIVE = if pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
 
-          buildInputs = with pkgs; [
-            elixir
-            nodejs
-            postgresql
-            awscli2
+            buildInputs = with pkgs; [
+              elixir
+              nodejs
+              postgresql
+              awscli2
 
-            git
-            beamPackages.elixir-ls
-            # Show erlang version:
-            # erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell
-            erlang
-            pgcli
-            glibcLocales
-            gnumake
-            gcc
-            # readline
-            # openssl
-            # libxml2
-            # curl
-            # libiconv
-            # yarn
+              git
+              beamPackages.elixir-ls
+              # Show erlang version:
+              # erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell
+              erlang
+              pgcli
+              glibcLocales
+              gnumake
+              gcc
+              # readline
+              # openssl
+              # libxml2
+              # curl
+              # libiconv
+              # yarn
 
-            ## Deploy tools
-            ## flyctl # fly.io
-            gigalixir
+              ## Deploy tools
+              ## flyctl # fly.io
+              gigalixir
+              nixos-generators
 
-            # Used for frontend dependencies, you are free to use yarn2nix as well
-            nodePackages.node2nix
-            # Formatting .js file
-            nodePackages.prettier
+              # Used for frontend dependencies, you are free to use yarn2nix as well
+              nodePackages.node2nix
+              # Formatting .js file
+              nodePackages.prettier
 
-            nixpkgs-fmt
-            # codespell --skip="./deps/*,./.git/*,./assets/*,./erl_crash.dump" -w
-            codespell
-            # dot -Tpng ecto_erd.dot -o erd.png
-            graphviz
+              nixpkgs-fmt
+              # codespell --skip="./deps/*,./.git/*,./assets/*,./erl_crash.dump" -w
+              codespell
+              # dot -Tpng ecto_erd.dot -o erd.png
+              graphviz
 
-            (pkgs.writeShellScriptBin "pg-stop" ''
+              (pkgs.writeShellScriptBin "pg-stop" ''
               pg_ctl -D $PGDATA -U postgres stop
             '')
-            (pkgs.writeShellScriptBin "pg-reset" ''
+              (pkgs.writeShellScriptBin "pg-reset" ''
               rm -rf $PGDATA
             '')
-            (pkgs.writeShellScriptBin "pg-setup" ''
+              (pkgs.writeShellScriptBin "pg-setup" ''
               ####################################################################
               # If database is not initialized (i.e., $PGDATA directory does not
               # exist), then set it up. Seems superfluous given the cleanup step
@@ -146,7 +159,7 @@
                 echo "CREATE USER postgres WITH PASSWORD 'postgres' CREATEDB SUPERUSER;" | postgres --single -E postgres
               fi
             '')
-            (pkgs.writeShellScriptBin "pg-start" ''
+              (pkgs.writeShellScriptBin "pg-start" ''
               ## # Postgres Fallback using docker
               ## docker run -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:14
 
@@ -228,11 +241,11 @@
                 -o "-c log_connections=on"                            \
                 start
             '')
-            (pkgs.writeShellScriptBin "pg-console" ''
+              (pkgs.writeShellScriptBin "pg-console" ''
               psql --host $PGDATA -U postgres
             '')
 
-            (pkgs.writeShellScriptBin "pg-mix-setup" ''
+              (pkgs.writeShellScriptBin "pg-mix-setup" ''
               # ####/################################################################
               # # Install Node.js dependencies if not done yet.
               # ####################################################################
@@ -277,7 +290,7 @@
               fi
             '')
 
-            (pkgs.writeShellScriptBin "check-formatted" ''
+              (pkgs.writeShellScriptBin "check-formatted" ''
               cd ${root}
 
               echo " > CHECKING nix formatting"
@@ -285,17 +298,17 @@
               echo " > CHECKING mix formatting"
               ${elixir}/bin/mix format --check-formatted
             '')
-          ]
-          ++ pkgs.lib.optional pkgs.stdenv.isLinux pkgs.libnotify # For ExUnit Notifier on Linux.
-          ++ pkgs.lib.optional pkgs.stdenv.isLinux pkgs.inotify-tools # For file_system on Linux.
-          ++ pkgs.lib.optional pkgs.stdenv.isDarwin pkgs.terminal-notifier # For ExUnit Notifier on macOS.
-          ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (with pkgs.darwin.apple_sdk.frameworks; [
-            # For file_system on macOS.
-            CoreFoundation
-            CoreServices
-          ]);
+            ]
+            ++ pkgs.lib.optional pkgs.stdenv.isLinux pkgs.libnotify # For ExUnit Notifier on Linux.
+            ++ pkgs.lib.optional pkgs.stdenv.isLinux pkgs.inotify-tools # For file_system on Linux.
+            ++ pkgs.lib.optional pkgs.stdenv.isDarwin pkgs.terminal-notifier # For ExUnit Notifier on macOS.
+            ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (with pkgs.darwin.apple_sdk.frameworks; [
+              # For file_system on macOS.
+              CoreFoundation
+              CoreServices
+            ]);
 
-          shellHook = ''
+            shellHook = ''
             if ! test -d .nix-shell; then
               mkdir .nix-shell
             fi
@@ -316,7 +329,45 @@
             ${elixir}/bin/mix --version
             ${elixir}/bin/iex --version
           '';
-        };
-      }
+          };
+          packages = let
+          version = "0.1.0";
+          src = ./.;
+          mixFodDeps = erlangPackages.fetchMixDeps {
+            inherit version src;
+            pname = "ri-elixir-deps";
+            sha256 = "sha256-jnx6TGAPfbwrhBUUCSFOQHmJiGtS15uMslt/yGsvi50=";
+          };
+          translatedPlatform =
+            {
+              aarch64-darwin = "macos-arm64";
+              aarch64-linux = "linux-arm64";
+              armv7l-linux = "linux-armv7";
+              x86_64-darwin = "macos-x64";
+              x86_64-linux = "linux-x64";
+            }
+              .${system};
+          npmDeps = npm2nix.v2.node_modules {
+            src = ./assets;
+            nodejs = pkgs.nodejs-18_x;
+          };
+        in rec {
+          default = erlangPackages.mixRelease {
+            inherit version src mixFodDeps;
+            pname = "ravensiris-web";
+            # need to get this working
+
+            preInstall = ''
+ mkdir -p _build
+    ln -s ${pkgs.tailwindcss}/bin/tailwindcss _build/tailwind-${translatedPlatform}
+    ln -s ${pkgs.esbuild}/bin/esbuild _build/esbuild-${translatedPlatform}
+
+    ${elixir}/bin/mix deps.get
+    ${elixir}/bin/mix assets.deploy
+    ${elixir}/bin/mix phx.gen.release
+  '';
+          };        
+};
+}
     );
 }

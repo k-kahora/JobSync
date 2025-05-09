@@ -40,3 +40,15 @@ aws configure sso
 can wrap the above in "eval $()"
 The above will set all the env variables for you to use with ExAws
 
+
+-- super helpful
+https://typeclasses.com/nixos-on-aws
+https://curiosum.com/blog/packaging-elixir-application-with-nix
+# PLAN
+Run this flake as a dev shell in a nixos environment,
+deploy that
+work on making a derivation in the meantime
+you have sunk too much time into this
+
+# 
+I have a user data set up, I should have it clone
