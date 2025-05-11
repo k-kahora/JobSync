@@ -11,16 +11,22 @@ config :jobsync,
   ecto_repos: [Jobsync.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :jobsync, Jobsync.Repo,
+  ssl: true,
+  ssl_opts: [verify: :verify_none]
+
 # Configures the endpoint
 config :jobsync, JobsyncWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
+  check_origin: ["http://34.207.84.96:4000"],
   render_errors: [
     formats: [html: JobsyncWeb.ErrorHTML, json: JobsyncWeb.ErrorJSON],
     layout: false
   ],
   pubsub_server: Jobsync.PubSub,
-  live_view: [signing_salt: "OwLcvZmg"]
+  live_view: [signing_salt: "OwLcvZmg"],
+  server: true
 
 # Configures the mailer
 #
