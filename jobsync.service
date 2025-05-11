@@ -1,0 +1,20 @@
+[Unit]
+Description=Jobsync App
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/JobSync
+ExecStart=/home/ubuntu/JobSync/_build/prod/rel/jobsync/bin/jobsync start
+ExecStop=/home/ubuntu/JobSync/_build/prod/rel/jobsync/bin/jobsync stop
+Restart=on-failure
+Environment=HOME=/home/ubuntu
+Environment=LANG=en_US.UTF-8
+Environment=MIX_ENV=prod
+Environment=SECRET_KEY_BASE=nUwMp5BTypO/A22d5WqGXCkQCdsPmYchAGDXWcunIGxZJxcjqaohmg2ewKyJawiJ
+Environment=PORT=4000
+Environment=DATABASE_URL=ecto://postgres:postgres@test-db.cuvoig8w0zge.us-east-1.rds.amazonaws.com/jobsync
+
+[Install]
+WantedBy=multi-user.target
+
