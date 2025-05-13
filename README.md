@@ -50,5 +50,66 @@ deploy that
 work on making a derivation in the meantime
 you have sunk too much time into this
 
-# 
+# For deploying you also need to set the following to test database connection in dev environment
+  ssl: true,
+  ssl_opts: [verify: :verify_none]
+
+# Notes 
+Need to generate secrets first as well as DATABASE_URL
+check origin needs to be set as well in config.exs
+check_origin: ["http://34.207.84.96:4000"], ip adress of the EC2 instance
+deployment script
+
+## Initial setup
+
+mix deps.get --only prod
+
+MIX_ENV=prod mix compile
+
+## Compile assets
+
+MIX_ENV=prod mix assets.deploy
+
+## Custom tasks (like DB migrations)
+
+MIX_ENV=prod mix ecto.migrate
+
+## Finally run the server
+
+PORT=4001 MIX_ENV=prod mix phx.server
+
 I have a user data set up, I should have it clone
+
+# 
+mix phx.gen.secret
+REALLY_LONG_SECRET
+
+export SECRET_KEY_BASE=REALLY_LONG_SECRET
+
+export DATABASE_URL=ecto://USER:PASS@HOST/database
+# Production I need a terraform script to set up my ec2 asg load balancers even me smtp email, I also need a ci/cd pipeline to automate the deployment of this that is the goal, so far I have manually got a set up working
+- [ ] Terraform VPC module setup
+- [ ] Single ec2 with a rds instance 
+- [ ] CI/CD to automattically deploy to this instance
+
+
+# Systemd service
+[Unit]
+Description=Jobsync App
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/JobSync
+ExecStart=/home/ubuntu/JobSync/_build/prod/rel/jobsync/bin/jobsync start
+ExecStop=/home/ubuntu/JobSync/_build/prod/rel/jobsync/bin/jobsync stop
+Restart=on-failure
+Environment=HOME=/home/ubuntu
+Environment=LANG=en_US.UTF-8
+Environment=MIX_ENV=prod
+Environment=SECRET_KEY_BASE=nUwMp5BTypO/A22d5WqGXCkQCdsPmYchAGDXWcunIGxZJxcjqaohmg2ewKyJawiJ
+Environment=PORT=4000
+Environment=DATABASE_URL=ecto://postgres:postgres@test-db.cuvoig8w0zge.us-east-1.rds.amazonaws.com/jobsync
+
+[Install]
+WantedBy=multi-user.target

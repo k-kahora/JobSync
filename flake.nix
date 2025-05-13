@@ -90,6 +90,8 @@ nodejs = pkgs.nodejs-18_x;
               nodejs
               postgresql
               awscli2
+              # packer
+              # terraform
 
               git
               beamPackages.elixir-ls

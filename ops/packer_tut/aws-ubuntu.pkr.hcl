@@ -1,3 +1,23 @@
+
+source "amazon-ebs" "based_on_custom" {
+  ami_name      = "my-second-custom-ami"
+  instance_type = "t2.micro"
+  region        = "us-west-2"
+  source_ami    = local.base_ami_id
+  ssh_username  = "ubuntu"
+}
+
+build {
+  name = "second-image"
+  sources = ["source.amazon-ebs.based_on_custom"]
+
+  provisioner "shell" {
+    inline = [
+      "echo 'This is the second layer image'",
+      "sudo apt install -y htop"
+    ]
+  }
+}
 packer {
   required_plugins {
     amazon = {
@@ -41,5 +61,9 @@ build {
 
   provisioner "shell" {
     script = "./user-data.sh"
+  }
+  
+  post-processor "manifest" {
+    output = "manifest.json"
   }
 }

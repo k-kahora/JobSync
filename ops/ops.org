@@ -1,0 +1,16 @@
+* Phase 1 OPS/Architechure
+This is the deployment for phase 1
+1. manually built ec2 instance and rds, with manual set up to link the two together
+2. Build the image with packer, use HPC Packer to upload the completed ami, this ami will have the base ami of elixir and phoenix and then it will extend this ami by cloning my repo from master, the building a release then setting it as a systemd service then enabling the service.
+3. Finally this will update AWS SSM with the new AMI id and in turn, I will have to manually run terraform apply
+   Add a diagram
+4. Also want the archatechur set up with terraform first.
+** Architechure
+Diagram draw out, I am using the default VPC with pretty open security groups
+* Phase 2
+3 AZs auto scaling and load balancers for this with a build up AZ.
+3 Maybe have some sort of custom github runner using spot instances 
+* Phase 3
+ECS - Maybe??
+
+
