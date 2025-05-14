@@ -1,43 +1,61 @@
 #!/bin/bash
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
+set -euxo pipefail
 
-set -eu -o pipefail
+DATABASE_URL="ecto://postgres:postgres@postgres-delete.c1iooq4k4dt8.us-west-2.rds.amazonaws.com/jobsync"
 
-# mix deps.get --only prod
-#
-# MIX_ENV=prod mix compile
-#
-# ## Compile assets
-#
-# MIX_ENV=prod mix assets.deploy
-#
-# ## Custom tasks (like DB migrations)
-#
-# MIX_ENV=prod mix ecto.migrate
-#
-#
-sudo -i -u ubuntu bash <<EOS
-set -eux
+# Run as ubuntu with clean variable escaping
+sudo -u ubuntu bash -l -c '
+  set -eux
 
-# Clone asdf
-git clone -b prod --single-branch https://github.com/k-kahora/JobSync.git
-cd JobSync
-mix deps.get --prod
+  . ~/.asdf/asdf.sh
+  . ~/.asdf/completions/asdf.bash
 
+  cd ~
+  git clone -b prod --single-branch https://github.com/k-kahora/JobSync.git
+  cd JobSync
 
-mix deps.get --only prod
+  export DATABASE_URL="'"$DATABASE_URL"'"
 
-MIX_ENV=prod mix compile
+  mix deps.get 
+  mix deps.get --only prod
+  MIX_ENV=prod mix compile
 
-## Compile assets
+  SECRET_KEY_BASE=$(mix phx.gen.secret | tail -n 1)
+  echo "$SECRET_KEY_BASE" > /tmp/secret_key_base
 
-MIX_ENV=prod mix assets.deploy
+  export SECRET_KEY_BASE="$SECRET_KEY_BASE"
+  MIX_ENV=prod mix assets.deploy
+  MIX_ENV=prod mix ecto.migrate
+  mix phx.gen.release
+  MIX_ENV=prod mix release
+'
 
-## Custom tasks (like DB migrations)
-export DATABASE_URL=<fill in with database url>
-export SECRET=<need secret here>
+# Pull the secret from inside the user shell
+SECRET_KEY_BASE=$(sudo cat /tmp/secret_key_base)
+echo "Generated SECRET_KEY_BASE: $SECRET_KEY_BASE"
 
-MIX_ENV=prod mix ecto.migrate
-# Add asdf to .bashrc
-EOS
+# Create the systemd unit
+cat <<EOF | sudo tee /etc/systemd/system/jobsync.service
+[Unit]
+Description=Jobsync App
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/JobSync
+ExecStart=/home/ubuntu/JobSync/_build/prod/rel/jobsync/bin/jobsync start
+ExecStop=/home/ubuntu/JobSync/_build/prod/rel/jobsync/bin/jobsync stop
+Restart=on-failure
+Environment=HOME=/home/ubuntu
+Environment=LANG=en_US.UTF-8
+Environment=MIX_ENV=prod
+Environment=SECRET_KEY_BASE=${SECRET_KEY_BASE}
+Environment=PORT=4000
+Environment=DATABASE_URL=${DATABASE_URL}
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable jobsync
