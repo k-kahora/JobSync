@@ -29,7 +29,7 @@ build {
 
   provisioner "shell" {
     scripts = [
-      "install-latest.sh"
+      "./ops/packer_tut/install-latest.sh"
     ]
   }
   post-processor "manifest" {
