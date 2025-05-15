@@ -36,4 +36,12 @@ build {
     source = "jobsync.service"
     destination = "/tmp/jobsync.service"
   }
+  post-processor "manifest" {
+    output     = "packer_manifest.json"
+    strip_path = true
+    custom_data = {
+      version_fingerprint = packer.versionFingerprint
+    }
+  }
+}
 }
