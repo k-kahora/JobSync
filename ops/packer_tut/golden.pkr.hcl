@@ -15,16 +15,16 @@ build {
   name = "second-image"
   sources = ["source.amazon-ebs.based_on_custom"]
 
-  # hcp_packer_registry {
-  #   bucket_name = "jobsync-full-build"
-  #   description = <<EOT
-  #   An image for jobsync
-  #   EOT
-  #
-  #   bucket_labels = {
-  #     "hashicorp-learn" = "learn-packer-github-actions",
-  #   }
-  # }
+  hcp_packer_registry {
+    bucket_name = "jobsync-prod"
+    description = <<EOT
+    An image for jobsync
+    EOT
+  
+    bucket_labels = {
+      "hashicorp-learn" = "learn-packer-github-actions",
+    }
+  }
 
 
   provisioner "shell" {

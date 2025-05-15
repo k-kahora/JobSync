@@ -49,8 +49,8 @@ jobs:
       - name: Get HCP Packer version fingerprint from Packer Manifest
         id: hcp
         run: |
-          last_run_uuid=$(jq -r '.last_run_uuid' "./ops/packer_tut/packer_manifest.json")
-          build=$(jq -r '.builds[] | select(.packer_run_uuid == "'"$last_run_uuid"'")' "./ops/packertut/packer_manifest.json")
+          last_run_uuid=$(jq -r '.last_run_uuid' "packer_manifest.json")
+          build=$(jq -r '.builds[] | select(.packer_run_uuid == "'"$last_run_uuid"'")' "packer_manifest.json")
           version_fingerprint=$(echo "$build" | jq -r '.custom_data.version_fingerprint')
           echo "::set-output name=version_fingerprint::$version_fingerprint"
   update-hcp-packer-channel:
