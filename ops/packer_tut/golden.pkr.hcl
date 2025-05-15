@@ -32,10 +32,6 @@ build {
       "install-latest.sh"
     ]
   }
-  provisioner "file" {
-    source = "jobsync.service"
-    destination = "/tmp/jobsync.service"
-  }
   post-processor "manifest" {
     output     = "packer_manifest.json"
     strip_path = true
