@@ -113,3 +113,5 @@ Environment=DATABASE_URL=ecto://postgres:postgres@test-db.cuvoig8w0zge.us-east-1
 
 [Install]
 WantedBy=multi-user.target
+
+# Trigger actions
