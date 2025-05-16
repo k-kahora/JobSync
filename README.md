@@ -89,8 +89,11 @@ export SECRET_KEY_BASE=REALLY_LONG_SECRET
 export DATABASE_URL=ecto://USER:PASS@HOST/database
 # Production I need a terraform script to set up my ec2 asg load balancers even me smtp email, I also need a ci/cd pipeline to automate the deployment of this that is the goal, so far I have manually got a set up working
 - [ ] Terraform VPC module setup
-- [ ] Single ec2 with a rds instance 
-- [ ] CI/CD to automattically deploy to this instance
+- [x] Single ec2 with a rds instance 
+- [x] CI/CD to automattically deploy to this instance
+- [ ] Terraform works with using the latest AMI however i want the setup to work with a way that a user can use just run terraform apply and boom everything is up adn running, also i ened hella good docs for this setup and a really banging blog post as well, by EOD today I want this working fully with CI/CD and then just running terraform apply
+- [ ] Also rn, I need to manually change check_origin, or find some work around
+- [ ] Also need so use sed or something to change the DATABASE_URL, right now the database url is hardcoded and there is no way around this unfortnately no easy way at least
 
 
 # Systemd service

@@ -21,7 +21,8 @@ config :jobsync, JobsyncWeb.Endpoint,
   ],
   pubsub_server: Jobsync.PubSub,
   live_view: [signing_salt: "OwLcvZmg"],
-  check_origin: ["http://localhost:4000"]
+  check_origin: ["http://localhost:4000"],
+  server: true
 
 # Configures the mailer
 #

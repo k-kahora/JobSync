@@ -25,7 +25,7 @@ sudo -u ubuntu bash -l -c '
 
   export SECRET_KEY_BASE="$SECRET_KEY_BASE"
   MIX_ENV=prod mix assets.deploy
-  MIX_ENV=prod mix ecto.migrate
+  # MIX_ENV=prod mix ecto.migrate
   mix phx.gen.release
   MIX_ENV=prod mix release
 '
@@ -51,11 +51,11 @@ Environment=LANG=en_US.UTF-8
 Environment=MIX_ENV=prod
 Environment=SECRET_KEY_BASE=${SECRET_KEY_BASE}
 Environment=PORT=4000
-Environment=DATABASE_URL=${DATABASE_URL}
+Environment=DATABASE_URL=<REPLACEME>
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-sudo systemctl daemon-reload
-sudo systemctl enable jobsync
+# sudo systemctl daemon-reload
+# sudo systemctl enable jobsync
