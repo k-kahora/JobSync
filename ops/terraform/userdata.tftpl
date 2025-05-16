@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euxo pipefail
+export DATABASE_URL="hello"
+
+# Replace database URL and other secrets
+sed -i "s|DATABASE_URL=.*|DATABASE_URL=ecto://${db_username}:${db_password}@${db_host}/${db_database}|" /etc/systemd/system/jobsync.service
+
+# Reload systemd and restart the service
+systemctl daemon-reload
+systemctl enable jobsync.service
+systemctl restart jobsync.service
+
+# Optional: run migrations
+/home/ubuntu/JobSync/_build/prod/rel/jobsync/bin/jobsync eval "Jobsync.Release.migrate"

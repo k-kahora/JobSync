@@ -35,3 +35,5 @@ jobsync-*.tar
 npm-debug.log
 /assets/node_modules/
 
+
+/ops/terraform/.terraform
