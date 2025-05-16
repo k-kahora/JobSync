@@ -24,6 +24,7 @@ sudo -u ubuntu bash -l -c '
   echo "$SECRET_KEY_BASE" > /tmp/secret_key_base
 
   export SECRET_KEY_BASE="$SECRET_KEY_BASE"
+
   MIX_ENV=prod mix assets.deploy
   # MIX_ENV=prod mix ecto.migrate
   mix phx.gen.release

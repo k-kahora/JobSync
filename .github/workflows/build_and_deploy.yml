@@ -65,4 +65,4 @@ jobs:
         working-directory: .github/scripts
         run: |
           channel_name=$( echo ${{github.ref_name}} | sed 's/\./-/g')
-          ./create_channel_version.sh $HCP_BUCKET_NAME $channel_name "${{ needs.build-artifact.outputs.version_fingerprint }}"
+          sudo ./create_channel_version.sh $HCP_BUCKET_NAME $channel_name "${{ needs.build-artifact.outputs.version_fingerprint }}"
