@@ -62,6 +62,7 @@ jobs:
         uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
 
       - name: Make script executable
+        working-directory: .github/scripts
         run: chmod +x ./create_channel_version.sh
 
       - name: Create and set channel
