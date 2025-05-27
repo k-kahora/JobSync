@@ -11,6 +11,10 @@ config :jobsync,
   ecto_repos: [Jobsync.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :jobsync, Jobsync.Repo,
+  ssl: true,
+  ssl_opts: [verify: :verify_none]
+
 # Configures the endpoint
 config :jobsync, JobsyncWeb.Endpoint,
   url: [host: "localhost"],
