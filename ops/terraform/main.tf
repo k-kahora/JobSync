@@ -205,3 +205,5 @@ resource "aws_route53_record" "jobsync-domain" {
   ttl     = 60
   records = [aws_instance.jobsync_ec2.public_ip]
 }
+
+
