@@ -11,7 +11,7 @@ sudo -u ubuntu bash -l -c '
   . ~/.asdf/completions/asdf.bash
 
   cd ~
-  git clone -b prod --single-branch https://github.com/k-kahora/JobSync.git
+  git clone -b development --single-branch https://github.com/k-kahora/JobSync.git
   cd JobSync
 
   export DATABASE_URL="'"$DATABASE_URL"'"
