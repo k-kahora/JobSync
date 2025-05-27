@@ -86,6 +86,8 @@ module "vpc" {
 
 }
 
+
+
 resource "aws_security_group" "allow_ssh_and_phoenix" {
   name   = "global group"
   vpc_id = module.vpc.vpc_ids.my_vpc
@@ -128,9 +130,9 @@ resource "aws_security_group" "allow_ssh_and_phoenix" {
     protocol    = "-1" # all protocols
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-
 }
+
+
 
 resource "aws_db_subnet_group" "jobsync_db_group" {
   name       = "db-subnet-group"
@@ -178,7 +180,7 @@ resource "aws_db_instance" "jobsync_db" {
 
 
 
-resource "aws_instance" "example" {
+resource "aws_instance" "jobsync_ec2" {
   ami                         = data.hcp_packer_artifact.jobsync-prod.external_identifier
   instance_type               = "t2.micro"
   subnet_id                   = module.vpc.subnet_ids.web_a
@@ -194,4 +196,12 @@ resource "aws_instance" "example" {
   tags = {
     Name = "latest-ami-test"
   }
+}
+
+resource "aws_route53_record" "jobsync-domain" {
+  zone_id = "Z0481175232KZBL6YLATT" # manually added hosted zone id
+  name    = "jobsync.buildertea.com"
+  type    = "A"
+  ttl     = 60
+  records = [aws_instance.jobsync_ec2.public_ip]
 }
